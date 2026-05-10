@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
@@ -10,8 +11,8 @@ type api struct {
 }
 
 type User struct {
-	Firstname string
-	Lastname  string
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
 }
 
 var users = []User{}
@@ -41,7 +42,28 @@ func (a *api) createUsersHandler(w http.ResponseWriter, r *http.Request) {
 		Lastname:  payload.Lastname,
 	}
 
-	users = append(users, u)
+	if err = insertUser(u); err != nil {
+		http.Error(w, err.Error(), 500)
+	}
 
 	w.WriteHeader(200)
+}
+
+func insertUser(u User) error {
+	// input validate
+	if u.Firstname == "" {
+		return errors.New("firstname is required")
+	}
+	if u.Lastname == "" {
+		return errors.New("lastname is required")
+	}
+
+	for _, user := range users {
+		if user.Firstname == u.Firstname && user.Lastname == u.Lastname {
+			return errors.New("already exists brow")
+		}
+	}
+
+	users = append(users, u)
+	return nil
 }
