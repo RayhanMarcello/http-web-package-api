@@ -4,10 +4,6 @@ import (
 	"net/http"
 )
 
-func (a *api) createUsersHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("craeted users"))
-}
-
 func main() {
 	api := &api{
 		addr: ":8081",
@@ -15,7 +11,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /users", api.getUserHandler)
+	mux.HandleFunc("GET /users", api.getUsersHandler)
 
 	svr := &http.Server{
 		Addr:    api.addr,
