@@ -12,6 +12,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /users", api.getUsersHandler)
+	mux.HandleFunc("POST /users", api.createUsersHandler)
 
 	svr := &http.Server{
 		Addr:    api.addr,
